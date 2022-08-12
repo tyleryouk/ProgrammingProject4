@@ -1,0 +1,177 @@
+/** Tyler Youk Database Class */
+
+import java.util.*;
+import java.util.Collections;
+
+/** Database Class: limits the types it can store to DatabaseTypes. 
+  * Database will store the data in nodes, just like a linked list. 
+  * Database will also let the user create an index for the database. An index is a sorted array (or in our case, a sorted ArrayList) of the data so that searches can happen quickly. */
+
+public class Database<T extends DatabaseType<T>>{
+
+  /** Instance Fields:
+    * 1. A node (something like LLNode or DLNode): that indicates the start of the list of nodes that store the data in the database. 
+    * 2. A Hashtable: that uses String as the key and ArrayList as the value. The hashtable will store the different indexes available to fast sort the data.
+    * 3. An int: that stores the number of elements being stored in the database. */
+ 
+  private LinkedList<T> list = new LinkedList<T>();
+  private Hashtable<String,ArrayList<T>> indexHash = new Hashtable<String,ArrayList<T>>();
+  private int numElementsInDatabase = 0;
+  
+  /** Constructors: */
+  public Database() {
+    //
+  }
+
+  /** Methods: 
+    * 1. void add: takes an element add adds it to the database by creating a node for the data and attaching it to the list of nodes. 
+    * The hashtable is cleared because all indexes stored in it are no longer valid. The add method should work very quickly, and so no traversal of the nodes is allowed. */
+  public void add(T element) {
+    list.add(element);
+    indexHash.clear(); }
+
+  /** 2. void delete: takes an element and deletes the element from the list of nodes. If the element occurs more than once in the list, all copies should be deleted. 
+    * If anything is deleted, the hashtable is cleared because the indexes are no longer valid. You may use linear search (the normal for-loop search) to find the element to delete. */
+  public void delete(T element) {
+    boolean changeCheck = false;
+    LinkedList<T> tempList = new LinkedList<T>();
+    ListIterator<T> iter = list.listIterator();
+    while(iter.hasNext()) {
+      T tempElement = iter.next();
+      if(tempElement.toString().equals(element.toString())) {changeCheck = true;}
+      else {tempList.add(tempElement);}}
+    if(changeCheck) {
+      indexHash.clear();
+      list = tempList;} }
+  
+  /**3. int size: returns the number of elements currently stored in the database (use the field and do not write a loop). */
+  public int size(){ return list.size(); }
+
+  /**4. LinkedList lookupInList: takes a value and a Comparator and returns a LinkedList that contains all elements in the database that match the input value. 
+  * Do a linear search (i.e. for loop) on the database's list of nodes, use the Comparator to identify all elements in the list of nodes that match the input value, and add those values to the LinkedList. 
+  * If no such elements exists, an empty LinkedList is returned. Note that the type of the input value will match the type of the elements in the database. */
+  public LinkedList<T> lookupInList(T element, Comparator<T> filter) { 
+    ListIterator<T> iter = list.listIterator();
+    LinkedList<T> returnList = new LinkedList<T>();
+    while(iter.hasNext()) {
+      T tempElement = iter.next();
+      if(filter.compare(element,tempElement) == 0) {
+        returnList.add(tempElement);}
+    }
+    return returnList;}
+  public LinkedList<T> lookupInList(T element, String index, Comparator<T> comparator) {
+    LinkedList<T> returnList = new LinkedList<T>();
+    ArrayList<T> aList = new ArrayList<T>();
+    return returnList;}
+  
+  /**5. ArrayList getList(String trait): If an index for trait exists in the hashtable, return it. 
+  * Otherwise, call makeIndex with the trait to create the index and return that index. 
+  * (Note that if the database is empty, the method should return an empty ArrayList.) */
+  public ArrayList<T> getList(String trait) {
+    if(indexHash.get(trait) == null) {
+      makeIndex(trait);
+      return indexHash.get(trait);}
+    else {return indexHash.get(trait);}}
+  
+  /** EXTRA CREDIT */ 
+  /** Methods: 
+    * 1. LinkedList lookupInIndex: takes a value, an ArrayList index, and a Comparator and returns a LinkedList that contains all elements of the database that match the input value. 
+    * You may assume the ArrayList is already sorted according to the input Comparator. Do a binary search on the ArrayList using the Comparator to find one element that matches the input value. 
+    * (I recommend using the binary search from the Java API Collections but you are welcome write your own.) Then, using the Comparator, find all elements in the ArrayList that matches the input value and place them into a LinkedList. 
+    * (Remember, the ArrayList is sorted so you can do this quickly.) If no such elements exist, return an empty LinkedList. Note that the type of the input value will match the type stored in the database. */
+  public LinkedList<T> lookupInIndex(T element, String index, Comparator<T> comparator) {
+    ArrayList<T> aList = new ArrayList<T>();
+    int intialMatch = -1;
+    int firstMatch = 0;
+    int lastMatch = 0;
+    //System.out.println("test1");
+    makeIndex(index);
+    //System.out.println("test2");
+    aList = indexHash.get(index);
+    
+    if(aList.size() == 0){
+      return new LinkedList<T>();}
+    intialMatch = binarySearch(element, aList, comparator);
+    firstMatch = intialMatch;
+    lastMatch = intialMatch;
+    if(intialMatch == -1)
+      return new LinkedList<T>();
+    //System.out.println(aList.get(0));
+    while(firstMatch > 0 && comparator.compare(aList.get(firstMatch - 1), element) == 0){
+      firstMatch -= 1;
+    }
+    //System.out.println("here");
+    while(lastMatch < aList.size() && comparator.compare(aList.get(lastMatch), element) == 0){
+      lastMatch += 1;
+    }
+    return arrayListPart(aList,firstMatch,lastMatch);}
+  
+  
+  /** 2.void makeIndex(String trait): If the database is empty, this method does nothing. 
+    * Otherwise, since the database contains only elements that are DatabaseTypes, 
+    * call the getComparatorByTrait(trait) method, using the trait to retrieve a Comparator. 
+    * Create an ArrayList and copy the addresses of the elements of the database into the ArrayList. 
+    * Sort the ArrayList using the Comparator, and store the ArrayList into the hashtable using the trait as the key. 
+    * (You may use a sort from the Java API Collections or ArrayList, or you may write your own, but if you do your own sort, it must be efficient.)*/
+  public void makeIndex(String trait) {
+    ArrayList<T> aList = new ArrayList<T>();
+    ListIterator<T> iter = list.listIterator();
+    while(iter.hasNext()) {
+      aList.add(iter.next());}
+    
+    if(!list.isEmpty()) {
+      Comparator<T> comparator = aList.get(0).getComparatorByTrait(trait);
+      Collections.sort(aList,comparator);}
+    indexHash.put(trait,aList);}
+  
+  /** 3.LinkedList lookup: takes a String trait and a value. If there exists an index in the hashtable that has a key that matches the input trait, 
+    * call lookupInIndex with the given value, the ArrayList index, and the appropriate Comparator for the trait. (You can get the Comparator by calling the value's getComparatorByTrait method.). 
+    * Otherwise, if there does not exist an index in the hastable for the input trait, call lookupInList with the given value and the appropriate Comparator for the trait. 
+    * Return the LinkedList returned by these methods. (Note, if the database is empty, this method should return an empty LinkedList.) */
+  public LinkedList<T> lookup(String trait, T element) {
+    LinkedList<T> returnList = new LinkedList<T>();
+    ArrayList<T> aList = new ArrayList<T>();
+    try{
+      return lookupInIndex(element, trait, element.getComparatorByTrait(trait));}
+    catch (Exception e) {
+      return lookupInList(element,element.getComparatorByTrait(trait));}}
+
+
+  
+  /** EXTRA HELPER METHODS */
+  /** 1. int binarySearch: helper methodto find a spot where a match occurs in an array list*/
+  private int binarySearch(T element, ArrayList<T> aList,Comparator<T> comparator) {
+    int front = 0;
+    int end = aList.size() - 1;;
+    while(front <= end) {
+      int middle = (end + front)/2;
+      int compareValue = comparator.compare(element,aList.get(middle));
+      if(compareValue == 0) {
+        return middle; }
+      else if(compareValue > 0)
+        front = middle + 1;
+      else
+        end = middle - 1; }
+    return -1;}
+  
+  /** 2. getData: method made for testing purposes*/
+  public LinkedList<T> getData() {
+    return list;
+  }
+  /** 3. getIndexHash: method made for testing purposes*/
+  public Hashtable<String,ArrayList<T>>  getIndexHash() {return indexHash;}
+  
+  /** 4 clearIndexHash: method made for testing purposes*/
+  public void  clearIndexHash() {indexHash.clear();}
+  
+  /** 5. arrayListPart: helper method to  construct a linked list of matches for lookupInIndex*/
+  private LinkedList<T> arrayListPart(ArrayList<T> aList, int start, int end) {
+    LinkedList<T> returnList = new LinkedList<T>(); //creating a list filtered with elements from array list
+    System.out.println("test3");
+    for(int i = start; i < end; i++) {
+      returnList.add(aList.get(i));}
+    System.out.println("test4");
+    return returnList;}
+  
+}
+

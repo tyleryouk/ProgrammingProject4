@@ -1,0 +1,42 @@
+//import java.util.*;
+//import java.util.ArrayList;
+//import java.util.Iterator;
+//import java.util.Scanner;  
+
+/*
+  private static final int QUIT = 0; 
+  private static final int ADD = 1;
+  private static final int LISTALL = 2;
+  private static final int SEARCH = 3;
+  private static final int DELETE = 4;
+
+  public static void main(String[] args){
+    ContactDatabase cdb = new ContactDatabase();
+    Scanner scan = new Scanner(System.in);
+    int choice = ADD;
+    // Main menu
+    while (choice != QUIT){
+      System.out.println();
+      System.out.println("Choose from the following:");   
+      System.out.println("0) Quit");   
+      System.out.println("1) Add new contact");  
+      System.out.println("2) List all contacts");   
+      System.out.println("3) Search contacts by keyword and display");
+      System.out.println("4) Search contacts by keyword and remove"); 
+      choice = scan.nextInt();
+      switch (choice) {
+        case ADD:
+          cdb.inputContact();
+          break;  
+        case LISTALL:
+          cdb.displayAll();
+          break;       
+        case SEARCH:
+          cdb.displayMatch();       
+          break;    
+        case DELETE:
+          cdb.deleteMatch();  
+          break;   
+      }
+    }
+  }*/

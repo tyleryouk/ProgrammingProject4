@@ -1,0 +1,12 @@
+/** Tyler Youk Database Type Class */
+import java.util.*;
+
+public interface DatabaseType<T> {
+  /** interface used for dictating types that are databases
+    * Methods: 
+    * Comparator getComparatorByTrait(String trait) where Comparator is an interface in java.util. */
+  public Comparator<T> getComparatorByTrait(String trait);
+  
+  
+  
+}

@@ -1,0 +1,76 @@
+/** Tyler Youk ContactDatabase class */
+
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Scanner;
+
+
+public class ContactDatabase {
+
+  private ArrayList<Contact> contacts; // ArrayList of contact
+
+  /** Constructors 
+    * Default constructor - make a new ArrayList object with parameter type contact */
+  ContactDatabase(){
+    contacts = new ArrayList<>();}
+
+  /**Methods:
+    * inputContact method */
+  public void inputContact() {
+    Scanner scan = new Scanner(System.in);
+    System.out.print("Please enter your first name: ");
+    String firstName = scan.nextLine();
+    System.out.print("Please enter your last name: ");
+    String lastName = scan.nextLine();
+    System.out.print("Please enter your phone number: ");
+    String phoneNumber = scan.nextLine();
+    System.out.print("Please enter your email: ");
+    String email = scan.nextLine();
+    contacts.add(new Contact(firstName, lastName, phoneNumber, email));
+  }
+  
+  /** displayAll method */
+  public void displayAll(){
+    for (Contact contact : contacts) {
+      System.out.println(contact.toString());
+    }
+  }
+  
+  /** displayMatch method */
+  public void displayMatch() {
+    Scanner scan = new Scanner(System.in);
+    System.out.print("Please enter your first name: ");
+    String firstName = scan.nextLine();
+    int flag = 0;
+    for (Contact contact : contacts) {
+      if (contact.getFirst().equalsIgnoreCase(firstName)) {
+        System.out.println(contact.toString());
+        flag = 1;
+      }
+    }
+    if (flag == 0) {System.out.println("No contact found!");}
+  }
+  
+  /** deleteMatch method */
+  public void deleteMatch() {
+    Scanner scan = new Scanner(System.in);
+    System.out.print("Please enter your first name: ");
+    String firstName = scan.nextLine();
+    int flag = 0;
+    Iterator<Contact> itr = contacts.iterator();
+    while (itr.hasNext()) {
+      Contact ct = itr.next();
+      if (ct.getFirst().equalsIgnoreCase(firstName))
+        itr.remove();
+      flag = 1;
+    }
+    if (flag == 0) {
+      
+      System.out.println("No contact found!");
+    }
+  }
+  
+
+    
+  }

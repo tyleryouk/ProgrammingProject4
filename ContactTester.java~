@@ -1,0 +1,69 @@
+/** Tyler Youk Contact & ContactDatabase Tester */
+
+import java.util.*;
+import java.util.ArrayList;
+import org.junit.*;
+import static org.junit.Assert.*;
+import java.util.LinkedList;
+
+
+public class ContactTester {
+  
+  @Test
+  public void testContact(){
+    Contact nullContact = new Contact();
+    Contact discordManager = new Contact("Joe", "Slime", "9038884480", "joe@gmail.com");
+    Contact webDeveloper = new Contact("Todd", "Lane", "9038884481", "todd@gmail.com");
+    Contact cto = new Contact("Scarlett", "Ash", "9038884482", "scarlett@gmail.com");
+    Contact ceo = new Contact("Top", "G", "9038884483", "noneofyourbusiness@gmail.com");
+    Contact hiringManager = new Contact("Marin", "Fame", "9038884484", "rodeohiring@gmail.com");
+    Contact shareHolderOne = new Contact("Tory", "Lanez", "9038884485", "shareholder@gmail.com");
+    Contact shareHolderTwo = new Contact("Travis", "Scott", "9038884486", "shareholder@gmail.com");
+    Contact shareHolderThree = new Contact("Future", "Hendrix", "9038884487", "shareholder@gmail.com"); //Start of Company
+    Database<Contact> rodeoEnterprise = new Database<Contact>();
+    
+
+    /** Testing: Getter methods */
+    assertEquals(null, nullContact.getFirst()); //Test 0: No elements to retrieve
+    assertEquals("Joe", discordManager.getFirst()); //Test 1: Single element to retrieve
+    assertEquals("Lane", webDeveloper.getLast()); //Test 1
+    assertEquals("9038884482", cto.getPhone()); //Test 1
+    assertEquals("noneofyourbusiness@gmail.com", ceo.getEmail()); //Test 1
+    
+    /** Testing: Getter methods */
+    nullContact.setFirst("NowHasFirst");
+    assertEquals("NowHasFirst", nullContact.getFirst()); //Test 0: No elements to retrieve
+    discordManager.setFirst("Josh");
+    webDeveloper.setLast("Fame");
+    cto.setPhone("0000000000");
+    ceo.setEmail("stillnoneofyourbusiness@gmail.com");
+    assertEquals("Josh", discordManager.getFirst()); //Test 1: Single element to retrieve
+    assertEquals("Fame", webDeveloper.getLast()); //Test 1
+    assertEquals("0000000000", cto.getPhone()); //Test 1
+    assertEquals("stillnoneofyourbusiness@gmail.com", ceo.getEmail()); //Test 1
+    
+    /** Testing: toString method*/
+    assertEquals("Lanez, Tory. 9038884485, shareholder@gmail.com", shareHolderOne.toString()); //Test many: Running through and printing all elements
+    assertEquals("Scott, Travis. 9038884486, shareholder@gmail.com", shareHolderTwo.toString()); 
+    assertEquals("Hendrix, Future. 9038884487, shareholder@gmail.com", shareHolderThree.toString()); 
+    assertEquals("null, NowHasFirst. null, null", nullContact.toString()); //Test 1: Running through and printing one element
+    nullContact.setFirst(null);
+    assertEquals("null, null. null, null", nullContact.toString()); //Test 0: Running through and printing no elements
+    
+    /** Testing: equals method */
+    Contact shareHolderOneCopy = new Contact("Tory", "Lanez", "9038884485", "shareholder@gmail.com");
+    Contact shareHolderOneCloseA = new Contact("Different", "Name", "Different Number", "shareholder@gmail.com");
+    Contact shareHolderOneCloseB = new Contact("Different", "Name", "9038884485", "Different Email");
+    Contact shareHolderOneCloseC = new Contact("Tory", "Lanez", "9038884485", "Different Email");
+    Contact shareHolderOneCloseD = new Contact("Tory", "Lanez", "Different Phone", "shareholder@gmail.com");
+    assertEquals(true, shareHolderOne.equals(shareHolderOneCopy)); //Test many: all elements equal each other
+    assertEquals(false, shareHolderOne.equals(discordManager)); //Test 0: no elements equal each other
+    assertEquals(false, shareHolderOne.equals(shareHolderOneCloseA)); //Test 1: One element equals each other
+    assertEquals(false, shareHolderOne.equals(shareHolderOneCloseB)); //Test 1: One element equals each other
+    assertEquals(false, shareHolderOne.equals(shareHolderOneCloseC)); //Test many: Two elements equal each other
+    assertEquals(false, shareHolderOne.equals(shareHolderOneCloseD)); //Test many: Two elements equal each other
+
+  }
+  
+  
+}

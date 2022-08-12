@@ -1,0 +1,100 @@
+/** Tyler Youk Contact Class */
+
+/**Contact: a class that represents a phone/email contact. The Contact class should implement the DatabaseType interface. */
+import java.util.*;
+
+public class Contact implements DatabaseType<Contact>{
+  
+  /** Instance Fields 
+    * A contact should have three Strings: 
+    * a name, a phone number, and a e-mail. 
+    * You should have the appropriate constructor as well as getter and setter methods. */
+  private String first, last, phone, email; //Splitting up name into first and last; Comparator still reads name from start of first name to end of last name.
+  
+  /** Constructors */
+  public Contact(){
+    this.first = null;
+    this.last = null;
+    this.phone = null;
+    this.email = null;}
+  
+  public Contact(String first, String last, String phone, String email){
+    this.first = first;
+    this.last = last;
+    this.phone = phone;
+    this.email = email; }
+
+  /** Methods 
+    * Getter Methods */
+  public String getFirst(){return this.first;}
+  public String getLast(){return this.last;}
+  public String getPhone(){return this.phone;}
+  public String getEmail(){return this.email;}
+  /** Setter Methods */
+  public void setFirst(String first){this.first = first;}
+  public void setLast(String last){this.last = last;}
+  public void setPhone(String phone){this.phone = phone;}
+  public void setEmail(String email){this.email = email;}
+
+  /** String toString: overriding the method of Object*/
+  @Override
+  public String toString(){
+    return last + ", " + first + ". " + phone + ", " + email;}
+  
+  /** boolean equals: overriding the method of Object. Two contacts should be equal if all fields are equal.*/
+  public boolean equals(Object otherObject) {
+    if (otherObject == null) {return false;}
+    else if (getClass() != otherObject.getClass()){return false;}
+    else{
+      Contact otherContact = (Contact) otherObject;
+      return (first.equals(otherContact.first) &&
+              last.equals(otherContact.last) &&
+              phone.equals(otherContact.phone) &&
+              email.equals(otherContact.email));}
+    }
+  
+  /** Comparator getComparatorByTrait(String trait): if the trait is "name", the method should return a Comparator that compares two Contacts by the name field.
+    * If the trait is "phone", the method should return a Comparator that compares two Contacts by the phone number field.
+    * If the trait is "email", the method should return a Comparator that compares two Contacts by the e-mail field. Otherwise, the method should return null.*/
+  @Override
+  public Comparator<Contact> getComparatorByTrait(String trait){
+    if(trait.equals("name")){
+      return new CompareName();
+    }  //if first name equals input 
+   else if(trait.equals("phone")){
+     return new ComparePhone();
+   }  //if last name equals input
+   else if(trait.equals("email")){
+     return new CompareEmail();
+   }  //if first name equals input 
+   else {return null;}
+  }
+  
+  /** Nested Class: Compare Name, since the method above wants to return a Comparator (need to instantiate a subclass of Comparator)*/
+  class CompareName implements Comparator<Contact>{
+  public CompareName(){}
+  public int compare(Contact a, Contact b){
+    String a_name = a.getFirst();
+    String b_name = b.getFirst();
+    return a_name.compareTo(b_name) ;
+  }
+  }
+  class CompareEmail implements Comparator<Contact>{
+    public CompareEmail(){}
+    public int compare(Contact a, Contact b){
+      return a.getEmail().compareTo(b.getEmail());
+    }
+  }
+  
+  class ComparePhone implements Comparator<Contact>{
+    public ComparePhone(){}
+    public int compare(Contact a, Contact b){
+      return a.getPhone().compareTo(b.getPhone());
+    }
+  }
+  
+}
+
+
+
+
